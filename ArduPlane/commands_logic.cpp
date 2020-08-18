@@ -100,6 +100,9 @@ bool Plane::start_command(const AP_Mission::Mission_Command& cmd)
             return quadplane.do_vtol_land(cmd);
         }
         
+    case MAV_CMD_NAV_VTOL_LOITER:
+    	return quadplane.do_vtol_loiter(cmd);
+
     // Conditional commands
 
     case MAV_CMD_CONDITION_DELAY:
@@ -268,6 +271,9 @@ bool Plane::verify_command(const AP_Mission::Mission_Command& cmd)        // Ret
         } else {
             return quadplane.verify_vtol_land();
         }
+
+    case MAV_CMD_NAV_VTOL_LOITER:
+            return quadplane.verify_vtol_loiter(cmd);
 
     // Conditional commands
 
