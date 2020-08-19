@@ -420,9 +420,9 @@ void AC_AttitudeControl_Multi::rate_controller_run()
 
 	//    }
 	//    else {
-	//float PID = get_rate_roll_pid().update_all(_rate_target_ang_vel.x, gyro_latest.x, _motors.limit.roll) + _actuator_sysid.x;
-	//    	_motors.set_roll(PID);
-	//        _motors.set_roll_ff(get_rate_roll_pid().get_ff());
+	float PID = get_rate_roll_pid().update_all(_rate_target_ang_vel.x, gyro_latest.x, _motors.limit.roll) + _actuator_sysid.x;
+	    	_motors.set_roll(PID);
+	        _motors.set_roll_ff(get_rate_roll_pid().get_ff());
 
 
 
