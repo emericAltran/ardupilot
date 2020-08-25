@@ -590,6 +590,15 @@ void AP_TECS::_update_energies(void)
     _SPE_dem = _hgt_dem_adj * GRAVITY_MSS;
     _SKE_dem = 0.5f * _TAS_dem_adj * _TAS_dem_adj;
 
+
+	if (!(_flight_stage == AP_Vehicle::FixedWing::FLIGHT_VTOL)) {
+	}
+	else if (plane.control_mode == &plane.mode_auto && is_vtol_land(plane.mission.get_current_nav_cmd().id)) {
+	}
+	else{
+	}
+
+
     // Calculate specific energy rate demands
     _SPEdot_dem = _hgt_rate_dem * GRAVITY_MSS;
     _SKEdot_dem = _TAS_state * _TAS_rate_dem;
