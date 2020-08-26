@@ -586,18 +586,25 @@ void AP_TECS::_detect_underspeed(void)
 
 void AP_TECS::_update_energies(void)
 {
-    // Calculate specific energy demands
-    _SPE_dem = _hgt_dem_adj * GRAVITY_MSS;
-    _SKE_dem = 0.5f * _TAS_dem_adj * _TAS_dem_adj;
 
+	if (mission_counter == 1) {
+		_TAS_dem_adj = 14.2;
+	}
+	else if (mission_counter == 2) {
+		_TAS_dem_adj = 22.2;
+		_hgt_rate_dem = 4.2;
+	}
+	else if (mission_counter == 3) {
+		_TAS_dem_adj = 22.2;
+	}
+	else if (mission_counter == 4) {
+		_TAS_dem_adj = 22.2;
+		_hgt_rate_dem = -1.7;
+	}
 
-	if (!(_flight_stage == AP_Vehicle::FixedWing::FLIGHT_VTOL)) {
-	}
-	else if (plane.control_mode == &plane.mode_auto && is_vtol_land(plane.mission.get_current_nav_cmd().id)) {
-	}
-	else{
-	}
-
+	// Calculate specific energy demands
+	_SPE_dem = _hgt_dem_adj * GRAVITY_MSS;
+	_SKE_dem = 0.5f * _TAS_dem_adj * _TAS_dem_adj;
 
     // Calculate specific energy rate demands
     _SPEdot_dem = _hgt_rate_dem * GRAVITY_MSS;
@@ -650,7 +657,11 @@ void AP_TECS::_update_throttle_with_airspeed(void)
     
     // Calculate total energy error
     _STE_error = constrain_float((_SPE_dem - _SPE_est), SPE_err_min, SPE_err_max) + _SKE_dem - _SKE_est;
+    _STE_error = _SPE_dem - _SPE_est + _SKE_dem - _SKE_est;
+
     float STEdot_dem = constrain_float((_SPEdot_dem + _SKEdot_dem), _STEdot_min, _STEdot_max);
+     STEdot_dem = _SPEdot_dem + _SKEdot_dem;
+
     float STEdot_error = STEdot_dem - _SPEdot - _SKEdot;
 
     // Apply 0.5 second first order filter to STEdot_error
@@ -713,7 +724,7 @@ void AP_TECS::_update_throttle_with_airspeed(void)
          _backstepping = ((2.0f/cosf(_aoa_rad))*(GRAVITY_MSS*sinf(_ahrs.pitch-_aoa_rad) + _TAS_rate_dem + beta*(_STE_error*_STE_error + _TAS_dem*_TAS_dem)*(1+_aoa_rad+ _aoa_rad*_aoa_rad)*_Theta_est) - _Kc*_STE_error);
 
 
-        _throttle_dem = constrain_float(_throttle_dem, _THRminf, _THRmaxf);
+        //_throttle_dem = constrain_float(_throttle_dem, _THRminf, _THRmaxf);
 
         float THRminf_clipped_to_zero = constrain_float(_THRminf, 0, _THRmaxf);
 
@@ -768,7 +779,7 @@ void AP_TECS::_update_throttle_with_airspeed(void)
 
     //_throttle_dem = _backstepping;
     // Constrain throttle demand
-    _throttle_dem = constrain_float(_throttle_dem, _THRminf, _THRmaxf);
+    //_throttle_dem = constrain_float(_throttle_dem, _THRminf, _THRmaxf);
 
     AP::logger().Write("TEST", "TimeUS,eTAS,eSTE,K1,K2,AOA,PIT", "Qffffff",
                        AP_HAL::micros64(),

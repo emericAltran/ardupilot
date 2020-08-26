@@ -35,6 +35,9 @@ public:
 
 	// demanded throttle in percentage
 	// should return 0 to 100
+
+	virtual void set_mission_counter(uint16_t) = 0;
+
 	virtual int32_t get_throttle_demand(void)=0;
 	
 	// demanded pitch angle in centi-degrees

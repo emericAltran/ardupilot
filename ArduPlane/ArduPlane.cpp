@@ -168,6 +168,14 @@ void Plane::ahrs_update()
  */
 void Plane::update_speed_height(void)
 {
+	uint16_t nav_index = plane.mission.get_current_nav_index();
+
+	if(nav_index == 4){SpdHgt_Controller->set_mission_counter(1);}
+	else if(nav_index == 5){SpdHgt_Controller->set_mission_counter(2);}
+	else if(nav_index == 6){SpdHgt_Controller->set_mission_counter(3);}
+	else if(nav_index == 7){SpdHgt_Controller->set_mission_counter(1);}
+
+
     if (auto_throttle_mode) {
 	    // Call TECS 50Hz update. Note that we call this regardless of
 	    // throttle suppressed, as this needs to be running for
@@ -431,7 +439,6 @@ void Plane::update_control_mode(void)
     } else {
         ahrs.set_fly_forward(true);
     }
-
     effective_mode->update();
 }
 
